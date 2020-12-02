@@ -1,11 +1,15 @@
 import React, {useState} from "react";
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
+import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const Hook = () => {
     const [userDetail, setUserDetail] = useState({});
     const [data, setData] = useState([]);
-    const [showResults, setShowResults] = React.useState(true)
+    const [showResults, setShowResults] = React.useState(true);
+    const [editableIndex, setEditableIndex] = useState(null);
 
     const onAdd = () => {
         setShowResults(!showResults)
@@ -25,13 +29,20 @@ const Hook = () => {
         setData(data.filter((value,i) => i !== index))
     }
 
-    const onEdit = () => {
-
+    const onEdit = (index) => {
+        setShowResults(!showResults)
+        setUserDetail(data[index])
+        setData(data)
+        setEditableIndex(index)
     }
 
     const submitValue = () => {
         setShowResults(!showResults)
-        setData([...data, userDetail])
+        if(editableIndex !== null){
+            data[editableIndex] = userDetail
+        }else{
+            setData([...data, userDetail])
+        }
         setUserDetail({})
     }
 
@@ -56,8 +67,12 @@ const Hook = () => {
                                 <td>{value.lastName}</td>
                                 <td>{value.age}</td>
                                 <td>
-                                    <button onClick={()=>{onEdit(index)}}>Edit</button>
-                                    <button onClick={()=>onDelete(index)}>Delete</button>
+                                    <Button variant="outlined" color="primary"  onClick={()=>{onEdit(index)}}>
+                                        <EditIcon />
+                                    </Button>{' '}
+                                    <Button variant="outlined" color="primary"  onClick={()=>onDelete(index)}>
+                                        <DeleteIcon />
+                                    </Button>
                                 </td>
 
                             </tr>
