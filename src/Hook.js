@@ -21,8 +21,12 @@ const Hook = () => {
     const [error, setError] = useState({});
 
     useEffect(() => {
-
-    })
+        let list = [];
+        if(JSON.parse(localStorage.getItem("data")) !== null ) {
+            list = JSON.parse(localStorage.getItem("data"));
+        }
+        setData(list);
+    },[])
 
     const validation = () => {
         let isError = false;
