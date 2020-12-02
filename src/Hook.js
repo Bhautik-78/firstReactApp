@@ -3,68 +3,62 @@ import '../node_modules/bootstrap/dist/css/bootstrap.css'
 
 
 const Hook = () => {
-        const [userDetail, setUserDetail] = useState({});
-        const [data, setData] = useState([]);
+    const [userDetail, setUserDetail] = useState({});
+    const [data, setData] = useState([]);
+    const [showResults, setShowResults] = React.useState(true)
+
+    const onAdd = () => {
+        setShowResults(!showResults)
+    }
 
     const handleChange = e => {
-        const {name, value} = e.target;
-        setUserDetail({...userDetail,[name]: value})
+        const {name, value,checked} = e.target;
+        if(name === "active" ){
+            setUserDetail({...userDetail, [name]: checked})
+        }else{
+            setUserDetail({...userDetail, [name]: value})
+        }
+
     }
 
-    const submitValue =() => {
-        setData([...data,userDetail])
+    const onDelete = (index) => {
+        setData(data.filter((value,i) => i !== index))
+    }
 
+    const onEdit = () => {
+
+    }
+
+    const submitValue = () => {
+        setShowResults(!showResults)
+        setData([...data, userDetail])
         setUserDetail({})
     }
-    // data.push(userDetail)
 
-    return(
-        <div className="App">
+    return (
         <div className="container">
-            <h2>Crud Form With Hooks</h2>
-
-            <b>FIRST NAME</b> : <input type="text" name="firstName" value={userDetail.firstName || ''} onChange={handleChange} /><br /><br />
-            <b>LAST NAME</b> : <input type="text" name="lastName"  value={userDetail.lastName  || ''} onChange={handleChange} /><br /><br />
-            <b>AGE</b> : <input type="text" name="age"  value={userDetail.age  || ''} onChange={handleChange} /><br /><br />
-            <b>GENDER</b> :{' '}<input type="radio" name="gender"  onChange={handleChange} value="male" />Male{' '}
-                    <input type="radio" name="gender"  onChange={handleChange} value="female" />Female{' '}
-                    <input type="radio" name="gender"  onChange={handleChange} value="other" />Other<br /><br />
-            <b>ADDRESS</b> : <input type="text" name="address"  value={userDetail.address  || ''} onChange={handleChange} /><br /><br />
-            <b>COUNTRY</b>:{' '}<select  name="country" value={userDetail.country  || ''} onChange={handleChange}>
-            <option value="India">India</option>
-            <option value="Brazil">Brazil</option>
-            <option value="USA">USA</option>
-            <option value="Dubai">Dubai</option>
-            <option value="UK">UK</option>
-            </select><br /><br />
-            <b>Is Active:</b>:{' '} <input type="checkbox" name="active"  onChange={handleChange} /><br /><br />
-
-            <button onClick={submitValue}>Submit</button>
-        </div><br />
-            <div>
-                <table className="table table-dark table-striped table table-bordered">
+            <br /><button className="btn-primary" type="button" onClick={onAdd}>Add New</button><br /><br />
+            <div className="row table-responsive">
+                <table className="table">
                     <thead>
-                        <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Age</th>
-                            <th>Gender</th>
-                            <th>Address</th>
-                            <th>Country</th>
-                            <th>Active</th>
-                        </tr>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Age</th>
+                        <th>Action</th>
+                    </tr>
                     </thead>
                     <tbody>
                     {
-                        data.map((value,index) => (
+                        data.map((value, index) => (
                             <tr key={index}>
                                 <td>{value.firstName}</td>
                                 <td>{value.lastName}</td>
                                 <td>{value.age}</td>
-                                <td>{value.gender}</td>
-                                <td>{value.address}</td>
-                                <td>{value.country}</td>
-                                <td>{value.active}</td>
+                                <td>
+                                    <button onClick={()=>{onEdit(index)}}>Edit</button>
+                                    <button onClick={()=>onDelete(index)}>Delete</button>
+                                </td>
 
                             </tr>
                         ))
@@ -72,6 +66,32 @@ const Hook = () => {
                     </tbody>
                 </table>
             </div>
+            <br/>
+            {showResults && <div className="col-md-6">
+                <h2>Registration Form</h2><br />
+
+                <b>FIRST NAME</b> : <input type="text" name="firstName" value={userDetail.firstName || ''}
+                                           onChange={handleChange}/><br/><br/>
+                <b>LAST NAME</b> : <input type="text" name="lastName" value={userDetail.lastName || ''}
+                                          onChange={handleChange}/><br/><br/>
+                <b>AGE</b> : <input type="text" name="age" value={userDetail.age || ''}
+                                    onChange={handleChange}/><br/><br/>
+                <b>GENDER</b> :{' '}<input type="radio" name="gender" checked={userDetail.gender === "male"} onChange={handleChange} value="male"/>Male{' '}
+                <input type="radio" name="gender" checked={userDetail.gender === "female"} onChange={handleChange} value="female"/>Female{' '}
+                <input type="radio" name="gender" checked={userDetail.gender === "other"} onChange={handleChange} value="other"/>Other<br/><br/>
+                <b>ADDRESS</b> : <input type="text" name="address" value={userDetail.address || ''}
+                                        onChange={handleChange}/><br/><br/>
+                <b>COUNTRY</b>:{' '}<select name="country" value={userDetail.country || ''} onChange={handleChange}>
+                <option value="India">India</option>
+                <option value="Brazil">Brazil</option>
+                <option value="USA">USA</option>
+                <option value="Dubai">Dubai</option>
+                <option value="UK">UK</option>
+            </select><br/><br/>
+                <b>I Agree the Terms & Conditions:</b>:{' '} <input type="checkbox" checked={userDetail.active} name="active" onChange={handleChange}/><br/><br/>
+
+                <button  className="btn-primary" onClick={submitValue}>Submit</button>
+            </div>}
         </div>
     )
 }
